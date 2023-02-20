@@ -1,8 +1,10 @@
 import glob
 import os
 import socket
+from collections import Counter
 
 output = ""
+Counter = Counter()
 
 os.chdir(r'/home/data')
 my_files = glob.glob('*.txt')
@@ -19,11 +21,7 @@ with open(r'IF.txt','r') as file:
     lines = data.split()
     number_of_words_if += len(lines)
     for line in lines:
-        line = line.lower()
-        line = line.strip(unwanted_chars)
-        if line not in if_dict:
-            if_dict[line] = 0
-        if_dict[line]+=1
+        Counter.update(line.replace("","").split())
 
 
 with open(r'Limerick.txt','r') as file:
@@ -33,16 +31,16 @@ with open(r'Limerick.txt','r') as file:
     number_of_words_limerick += len(lines)
 
 output = output + "Printing total number of words in each text file:" + "\n"
-output = output + "Limerick: {}".format(number_of_words_if)+"\n"
-output = output + "IF: {}".format(number_of_words_limerick)+"\n"
+output = output + "Limerick: {}".format(number_of_words_limerick)+"\n"
+output = output + "IF: {}".format(number_of_words_if)+"\n"
 output = output + "Grand Total: {}".format(number_of_words_if+number_of_words_limerick)+"\n\n"
 
 if_dict_3 = sorted(if_dict.items(), key=lambda x: x[1], reverse=True)[:3]
 
 output = output+"Top 3 words with maximum number of counts in IF.txt :"+"\n"
 
-for key,value in if_dict_3:
-    output = output + "{}: {}".format(key,value)+"\n"
+output = output + str(Counter.most_common(3)) +"\n"
+
 
 hostname = socket.gethostname()
 IPAddr = socket.gethostbyname(hostname)
